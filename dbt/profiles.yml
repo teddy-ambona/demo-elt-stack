@@ -1,0 +1,12 @@
+default:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: postgres
+      pass: postgres
+      port: 5432
+      dbname: postgres
+      schema: public  # We should create a new schema, but public will do for this demo
+      threads: 4

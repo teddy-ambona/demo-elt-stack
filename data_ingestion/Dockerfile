@@ -13,7 +13,8 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
-COPY ./populate_csv_into_db.py ./
+COPY populate_csv_into_db.py ./
+COPY data ./data
 
 # Using non-root user to reduce vulnerabilities
 USER app

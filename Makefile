@@ -22,10 +22,11 @@ up:
 down:
 	docker-compose down --volumes --rmi all
 
-create-table:
-	psql -h localhost -d postgres -W postgres -p 5432 -U postgres -f create_table.sql
-
 populate-db:
+	$(DRUN) --network host ${IMAGE_TAG}
 
-# populate-db:
-# 	psql -h localhost -d postgres -W postgres -p 5432 -U postgres -c "\copy transactions (account_number, transaction_date, transaction_details, cheque_number, value_date, withdrawal_amount, deposit_amount, balance_amount) FROM 'data/transactions_data.csv' DELIMITER ',' csv header;"
+check-data-raw:
+	psql -h localhost -d postgres -W postgres -p 5432 -U postgres -c "SELECT * from raw.transactions"
+
+check-data-staging:
+	psql -h localhost -d postgres -W postgres -p 5432 -U postgres -c "SELECT * from staging.transactions"

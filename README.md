@@ -4,10 +4,10 @@
 
 1/ 
 running on host
-Python script to quickly populate DB: in Docker
-Define data model with DBT
-Add test
-Define 2 data transformation
+Python script to quickly populate DB: in Docker OK
+Define data model with DBT OK
+Add test OK
+Define 2 data transformation OK
 Running in Airflow
 Set up Airflow in docker-compose
 Populate csv wth PostgresOperator
@@ -21,20 +21,58 @@ Populate csv wth PostgresOperator
 
 ## 2 - Quickstart
 
-DBT is a compiler and runner, it doesn't handle raw data loading directly so we use PostgresOperator in Airflow for the data ingestion (a workaround that could be used for the demo is using "seed" but it is only recommended for static data whilst the withdrawls history is dynamic data). Python can be used for more complex data ingestion scripts.
-
-Try running the following commands:
-- dbt run
-- dbt test
+DBT is a compiler and runner, it doesn't handle raw data loading directly so we use a Python script to load the CSV data. Note that a PostgresOperator in Airflow would do for the data ingestion but I didn't want to ingest the full CSV and PostgresOperator isn't great for custom CSV imports. Another workaround that could be used for the demo is using the DBT "seed" but it is only recommended for static data whilst the withdrawls history is dynamic data.
 
 Orchestration with Airflow, add test task to DAG
 
+## File structure
+
+explain only top directories
+
+```
+.
+ |-init_db.sql // SQL Query run during initialization of postgresDB
+ |-docker-compose.yaml
+ |-dbt
+  |-profiles.yml
+  |-tests
+  | |-.gitkeep
+  | |-ensure_withdrawal_or_deposit.sql
+  | |-value_date_greater_than_transaction_date.sql
+  |-models
+  | |-staging
+  | | |-schema.yml
+  | | |-source.yml
+  | | |-transactions.sql
+  |-macros // custom macro to override the schema name
+  |-dbt_project.yml
+ |-Makefile  // Makes terminal interactions much faster
+ |-README.md
+ |-.gitignore
+ |-data_ingestion  // Contains the Python script
+ | |-requirements.in
+ | |-requirements.txt
+ | |-Dockerfile
+ | |-populate_csv_into_db.py
+ | |-data
+```
+
 ## 3 - ELT
 
-### Extract
+raw, staging schemas
 
-Python script that will read the CSV and drop the last column, we don't want to store data that carries no information.
+### Extract & Load
 
+Python script that will read the CSV, remove duplicates and drop the last column, we don't want to store data that carries no information.
+
+### Transform
+
+Add DBT Completed DAG
+
+# Tests
+
+- DBT tests are located under [./dbt/tests/](./dbt/tests/)
+- The Python script should also have unit/functional tests but they have been omitted to keep the demo simple. You can refer to my other repo [financial-data-api](https://github.com/teddy-ambona/financial-data-api/tree/main/app/tests) if you want more details on python tests.
 
 ## Improvements
 - Add architecture diagram for ETL and data viz
@@ -43,6 +81,30 @@ Python script that will read the CSV and drop the last column, we don't want to 
 ## Resources:
 - [Running Airflow in Docker](https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html)
 - 
+
+# Useful commands
+
+Check DBT DB connection status
+
+```bash
+dbt debug
+```
+
+Generate DBT documentation
+
+```bash
+dbt docs generate
+```
+
+Dry-run DBT
+```bash
+dbt compile
+```
+
+Run DBT tests
+```bash
+dbt test
+```
 
 ## Task 2: 
 

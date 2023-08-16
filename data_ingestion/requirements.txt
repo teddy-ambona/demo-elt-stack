@@ -8,6 +8,8 @@ contextlib2==21.6.0
     # via schema
 coverage[toml]==7.3.0
     # via pytest-cov
+greenlet==2.0.2
+    # via sqlalchemy
 iniconfig==2.0.0
     # via pytest
 numpy==1.25.2
@@ -39,5 +41,9 @@ schema==0.7.5
     # via -r data_ingestion/requirements.in
 six==1.16.0
     # via python-dateutil
+sqlalchemy==2.0.19
+    # via -r data_ingestion/requirements.in
+typing-extensions==4.7.1
+    # via sqlalchemy
 tzdata==2023.3
     # via pandas
