@@ -142,6 +142,8 @@ dbt test
 
 ## Task 2: 
 
+*Please write up no more than 300 words on your opinions of the practical realities of taking a lakehouse approach to building a data stack vs a data mesh approach.*
+
 **Source of truth**
 
 In the Lakehouse approach, the data lake often serves as the primary source of truth. 
