@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: src_postgres
+    schema: raw
+    database: postgres
+
+    tables:
+      - name: transactions

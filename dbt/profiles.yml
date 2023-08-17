@@ -1,0 +1,12 @@
+default:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: postgres
+      pass: postgres
+      port: 5431
+      dbname: postgres
+      schema: raw
+      threads: 4

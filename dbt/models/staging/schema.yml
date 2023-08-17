@@ -1,0 +1,12 @@
+
+version: 2
+
+models:
+  - name: transactions
+    description: "This table stores transactions data"
+    columns:
+      - name: transaction_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
