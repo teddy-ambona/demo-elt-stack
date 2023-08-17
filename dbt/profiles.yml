@@ -6,7 +6,7 @@ default:
       host: localhost
       user: postgres
       pass: postgres
-      port: 5432
+      port: 5431
       dbname: postgres
-      schema: public  # We should create a new schema, but public will do for this demo
+      schema: raw
       threads: 4

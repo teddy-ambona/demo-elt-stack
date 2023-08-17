@@ -9,7 +9,7 @@ FPATH = 'data/transactions_data.csv'
 DB_USERNAME='postgres'
 DB_PASSWORD='postgres'
 DB_HOST='localhost'
-DB_PORT=5432
+DB_PORT=5431
 DB_NAME='postgres'
 
 # Format logs
@@ -33,7 +33,7 @@ logging.info('Raw data formatted.')
 
 # Insert data into DB
 # Initialize connexion
-conn_string = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
+conn_string = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 db = create_engine(conn_string)
 conn = db.connect()
 logging.info('Connected to DB.')
