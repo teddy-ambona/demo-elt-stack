@@ -17,14 +17,13 @@ This demo has been developed using MACOS Monterey v12.5, you may encouter DB hos
 
 DBT is a compiler and runner, it doesn't handle raw data loading directly so we use a Python script to load the CSV data. Note that a PostgresOperator in Airflow would do for the data ingestion but I didn't want to ingest the full CSV and PostgresOperator isn't great for custom CSV imports. Another workaround that could be used for the demo is using the DBT "seed" but it is only recommended for static data whilst the withdrawls history is dynamic data.
 
-Orchestration with Airflow, add test task to DAG
-
 ```bash
 make build-all-images
-make up
+
+make up  # Start DB, Airflow, Superset services
 ```
 
-You can now access:
+You can now access (I recommend using incognito mode because logging into Superset with log you out of Airflow otherwise):
 
 [Airflow DAG](http://localhost:8080/dags/transactions_elt/graph)(running on localhost:8080)
 
@@ -39,13 +38,13 @@ Manually trigger the DAG
 
 <img src="./docs/img/dag_complete.png" width="650"/>
 
-The test task wil fail because one test does not pass.
+The test task will fail because one test does not pass.
 
 Now you can open [Superset](http://localhost:8088/dashboard/list/)(running on localhost:8088)
 
 username: `admin`, password: `admin`
 
-And manually import the [example_dashboard_export.zip](./superset/example_dashboard_export.zip)(this should be done programmatically at init time in the container, but manual import will do for this demo)
+And manually import the [example_dashboard_export.zip](./superset/example_dashboard_export.zip)(this should be done programmatically at init time in the container, but manual import will do for this demo). Postgres Db password: `postgres`
 
 <img src="./docs/img/superset_dashboard_list.png" width="650"/>
 
@@ -53,9 +52,7 @@ You can now see the "Monitoring Dashboard" that contains one graph that displays
 
 <img src="./docs/img/superset_dashboard.png" width="650"/>
 
-## 3 - File structure
-
-explain only top directories
+## 3 - Project file structure
 
 ```
 .
@@ -145,10 +142,18 @@ dbt test
 
 ## Task 2: 
 
-*Please write up no more than 300 words on your opinions of the practical realities of taking a lakehouse approach to building a data stack vs a data mesh approach.*
+**Source of truth**
 
-Source of truth
-Central vs decentralized
-Data Mesh allows for redunduncies, this is offset by low compute cost and speed/flexibility that we wouldn't have with DWH
+In the Lakehouse approach, the data lake often serves as the primary source of truth. 
 
-In either case we need high quality and reliable data
+In a Data Mesh approach, the idea of a central source of truth is decentralized. Each data domain or product team within the organization becomes responsible for its own data's truth. This can lead to multiple sources of truth, where each team maintains and governs their data independently [more on that in this article](https://towardsdatascience.com/data-contracts-ensure-robustness-in-your-data-mesh-architecture-69a3c38f07db). This raises challenges in ensuring consistency and reliability across the organization's data landscape. To address this, Data Mesh emphasizes standardizing data interfaces and data contracts, enabling easier integration and collaboration between domains
+
+**Central vs decentralized**
+
+A Lakehouse approach integrates data warehousing and data lake capabilities, combining the best of both worlds. It centralizes data storage, simplifying data management and enabling analytics. This can lead to efficient querying and faster insights. However, ensuring data quality, governance, and security across diverse data types can be challenging.
+
+On the other hand, the Data Mesh approach focuses on decentralized ownership and management of data domains, treating them as individual products. Data Mesh allows for redunduncies, this is offset by low compute cost and speed/flexibility that we wouldn't have with datawarehouse. The Data Mesh approach also encourages standardization of data interfaces and the use of shared infrastructure components. Yet, it introduces complexity in orchestrating data integration and maintaining data consistency across domains.
+
+**In a nutshell**
+
+In either case we need high quality and reliable data. Adopting a Lakehouse approach might suit organizations with well-established data practices, emphasizing centralization, and needing quick insights. Conversely, the Data Mesh approach can be effective for large enterprises seeking to harness the power of diverse data sources without overwhelming a central team, especially when those sources are continually evolving.
