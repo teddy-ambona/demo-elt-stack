@@ -1,4 +1,6 @@
-# tocos-assignment
+# ELT Data Stack
+
+This is a demo project (self-contained with docker-compose) that showcases an ELT process to load data into a warehouse, and process from raw layers into semantic and analytic layers with DBT. The data is then presented in a Superset dashboard.
 
 ## Target setup
 
@@ -6,7 +8,7 @@
 
 ## 1 - Prerequisites
 
-This demo has been developed using MACOS Monterey v12.5, you may encouter DB host issues with docker-compose if you are running it on windows (You can change DB host to `host.docker.internal` in Apache superset for instance).
+This demo has been developed using MACOS Monterey v12.5, you may encounter DB host issues with docker-compose if you are running it on windows (You can change DB host to `host.docker.internal` in Apache superset for instance).
 
 - [Docker](https://docs.docker.com/get-docker/)(8.0 GB of memory and 4 CPUs)
 - [Docker Compose CLI plugin](https://docs.docker.com/compose/install/compose-plugin/)
@@ -14,8 +16,6 @@ This demo has been developed using MACOS Monterey v12.5, you may encouter DB hos
 - [dbt CLI (Optional)](https://docs.getdbt.com/docs/core/installation)(version installed for this demo: 1.6.0, postgres plugin: 1.6.0)
 
 ## 2 - Quickstart
-
-DBT is a compiler and runner, it doesn't handle raw data loading directly so we use a Python script to load the CSV data. Note that a PostgresOperator in Airflow would do for the data ingestion but I didn't want to ingest the full CSV and PostgresOperator isn't great for custom CSV imports. Another workaround that could be used for the demo is using the DBT "seed" but it is only recommended for static data whilst the withdrawls history is dynamic data.
 
 ```bash
 make build-all-images
@@ -87,7 +87,15 @@ You can now see the "Monitoring Dashboard" that contains one graph that displays
 
 ## 4 - ELT
 
+### Dataset
+
+The raw dataset (sourced from Kaggle) is located in [transactions_data.csv](./data_ingestion/data/transactions_data.csv). It represents synthetic bank transactions. An extract is presented below:
+
+<img src="./docs/img/csv_preview.png" width="650"/>
+
 ### Extract & Load
+
+DBT is a compiler and runner, it doesn't handle raw data loading directly so we use a Python script to load the CSV data. Note that a PostgresOperator in Airflow would do for the data ingestion but I didn't want to ingest the full CSV and PostgresOperator isn't great for custom CSV imports. Another workaround that could be used for the demo is using the DBT "seed" but it is only recommended for static data whilst the withdrawls history is dynamic data.
 
 Python script that will read the CSV, remove duplicates and drop the last column, we don't want to store data that carries no information.
 
@@ -107,7 +115,7 @@ You will note that the Airflow task `test_transformed_data` fails. I leave it as
 Note that the superset service may take 4-5min to spin up.
 
 ## 6 - Improvements
-- Add architecture diagram for ETL and data viz
+- Improve data viz with storytelling
 - Dependency injections for test/dev/staging/prod environments
 - Airflow DAGS and config should be included in the Docker image (mounting volumes allowed for fast iterations)
 - Superset dashboard should be programmatically imported at init time
@@ -139,23 +147,3 @@ Run DBT tests
 ```bash
 dbt test
 ```
-
-## Task 2: 
-
-*Please write up no more than 300 words on your opinions of the practical realities of taking a lakehouse approach to building a data stack vs a data mesh approach.*
-
-**Source of truth**
-
-In the Lakehouse approach, the data lake often serves as the primary source of truth. 
-
-In a Data Mesh approach, the idea of a central source of truth is decentralized. Each data domain or product team within the organization becomes responsible for its own data's truth. This can lead to multiple sources of truth, where each team maintains and governs their data independently [more on that in this article](https://towardsdatascience.com/data-contracts-ensure-robustness-in-your-data-mesh-architecture-69a3c38f07db). This raises challenges in ensuring consistency and reliability across the organization's data landscape. To address this, Data Mesh emphasizes standardizing data interfaces and data contracts, enabling easier integration and collaboration between domains
-
-**Central vs decentralized**
-
-A Lakehouse approach integrates data warehousing and data lake capabilities, combining the best of both worlds. It centralizes data storage, simplifying data management and enabling analytics. This can lead to efficient querying and faster insights. However, ensuring data quality, governance, and security across diverse data types can be challenging.
-
-On the other hand, the Data Mesh approach focuses on decentralized ownership and management of data domains, treating them as individual products. Data Mesh allows for redunduncies, this is offset by low compute cost and speed/flexibility that we wouldn't have with datawarehouse. The Data Mesh approach also encourages standardization of data interfaces and the use of shared infrastructure components. Yet, it introduces complexity in orchestrating data integration and maintaining data consistency across domains.
-
-**In a nutshell**
-
-In either case we need high quality and reliable data. Adopting a Lakehouse approach might suit organizations with well-established data practices, emphasizing centralization, and needing quick insights. Conversely, the Data Mesh approach can be effective for large enterprises seeking to harness the power of diverse data sources without overwhelming a central team, especially when those sources are continually evolving.

@@ -5,7 +5,7 @@
 PYTHON_IMAGE_TAG = data-ingestion:latest
 AIRFLOW_IMAGE_TAG = docker.io/library/docker-airflow:latest
 DBT_IMAGE_TAG = dbt-tocos:latest
-SUPERSET_IMAGE_TAG = superset-tocos:latest
+SUPERSET_IMAGE_TAG = superset-custom-image:latest
 DRUN = docker run --rm
 DBASH = $(DRUN) -u root -v ${PWD}:/foo -w="/foo" python bash -c 
 
