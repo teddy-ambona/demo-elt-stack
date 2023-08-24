@@ -25,7 +25,7 @@ with DAG(
 
     task_transformation = DockerOperator(
         task_id="transform_data",
-        image='dbt-tocos:latest',
+        image='dbt-custom-image:latest',
         docker_url="tcp://docker-proxy:2375",
         network_mode="host",
         api_version='auto',
@@ -35,7 +35,7 @@ with DAG(
 
     task_tests = DockerOperator(
         task_id="test_transformed_data",
-        image='dbt-tocos:latest',
+        image='dbt-custom-image:latest',
         docker_url="tcp://docker-proxy:2375",
         network_mode="host",
         api_version='auto',
