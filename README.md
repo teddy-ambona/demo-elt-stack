@@ -101,7 +101,9 @@ Python script that will read the CSV, remove duplicates and drop the last column
 
 ### Transform
 
-DBT will read data from the raw schema, parse and format the data and finally dump it into the staging schema.
+DBT will read data from the raw schema, parse and format the data (cf [transactions.sql](./dbt/models/staging/transactions.sql))and finally dump it into the staging schema. An extract of the staging `transaction` table is displayed below:
+
+<img src="./docs/img/staging_data.png" width="650"/>
 
 # Tests
 
@@ -115,15 +117,17 @@ You will note that the Airflow task `test_transformed_data` fails. I leave it as
 Note that the superset service may take 4-5min to spin up.
 
 ## 6 - Improvements
+
 - Improve data viz with storytelling
 - Dependency injections for test/dev/staging/prod environments
 - Airflow DAGS and config should be included in the Docker image (mounting volumes allowed for fast iterations)
 - Superset dashboard should be programmatically imported at init time
 
 ## 7 - Resources:
+
 - [Running Airflow in Docker](https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html)
 
-# 8 - Useful commands
+## 8 - Useful commands
 
 Check DBT DB connection status
 

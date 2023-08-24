@@ -4,7 +4,7 @@
 
 PYTHON_IMAGE_TAG = data-ingestion:latest
 AIRFLOW_IMAGE_TAG = docker.io/library/docker-airflow:latest
-DBT_IMAGE_TAG = dbt-tocos:latest
+DBT_IMAGE_TAG = dbt-custom-image:latest
 SUPERSET_IMAGE_TAG = superset-custom-image:latest
 DRUN = docker run --rm
 DBASH = $(DRUN) -u root -v ${PWD}:/foo -w="/foo" python bash -c 
@@ -56,8 +56,8 @@ populate-db:
 
 # For quick debugging
 check-data-raw:
-	psql -h localhost -d postgres -W postgres -p 5431 -U postgres -c "SELECT * from raw.transactions"
+	psql -h localhost -d postgres -W postgres -p 5431 -U postgres -c "SELECT * from raw.transactions LIMIT 10"
 
 # For quick debugging
 check-data-staging:
-	psql -h localhost -d postgres -W postgres -p 5431 -U postgres -c "SELECT * from staging.transactions"
+	psql -h localhost -d postgres -W postgres -p 5431 -U postgres -c "SELECT * from staging.transactions LIMIT 10"
